@@ -10,6 +10,18 @@ spring:
     driver-class-name : com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto : create-drop
+      ddl-auto : update
     show-sql : true
     open-in-view : false
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: tracko1app@gmail.com
+    password: ysjetsftvpeycean
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable : true
+

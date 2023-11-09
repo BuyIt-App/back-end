@@ -24,11 +24,24 @@ public class CustomerService {
             cr.setFirstName(c.getFirstName());
             cr.setLastName(c.getLastName());
             cr.setPhoneNumber(c.getPhoneNumber());
-            cr.setOrders(c.getOrders());
             customerResList.add(cr);
         }
 
         return customerResList;
 
     }
+
+    public CustomerRes findById(long id) {
+        Customer c = customerRepo.findById((int) id).get();
+        CustomerRes cr = new CustomerRes();
+        cr.setCustomerId(c.getCustomerId());
+        cr.setEmailId(c.getEmailId());
+        cr.setFirstName(c.getFirstName());
+        cr.setLastName(c.getLastName());
+        cr.setPhoneNumber(c.getPhoneNumber());
+
+
+        return cr;
+    }
+
 }

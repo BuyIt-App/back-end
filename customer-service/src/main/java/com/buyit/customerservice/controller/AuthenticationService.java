@@ -1,7 +1,9 @@
 package com.buyit.customerservice.controller;
 
 import com.buyit.customerservice.config.JwtService;
+import com.buyit.customerservice.model.Cart;
 import com.buyit.customerservice.model.Customer;
+import com.buyit.customerservice.repository.CartRepo;
 import com.buyit.customerservice.repository.CustomerRepo;
 import com.buyit.customerservice.token.Token;
 import com.buyit.customerservice.token.TokenRepository;
@@ -9,6 +11,7 @@ import com.buyit.customerservice.token.TokenType;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,6 +28,7 @@ public class AuthenticationService {
   private final PasswordEncoder passwordEncoder;
   private final JwtService jwtService;
   private final AuthenticationManager authenticationManager;
+  private final CartRepo cartRepo;
 
   public AuthenticationResponse register(RegisterRequest request) {
     var customer = Customer.builder()
@@ -36,11 +40,18 @@ public class AuthenticationService {
         .role("CUSTOMER")
             .resetPasswordToken(null)
         .build();
+
+    Cart cart = new Cart();
+    cartRepo.save(cart);
+    customer.setCart(cart);
     var savedUser = customerRepo.save(customer);
     var jwtToken = jwtService.generateToken(customer);
     var refreshToken = jwtService.generateRefreshToken(customer);
     saveUserToken(savedUser, jwtToken);
+    cart.setTotalPrice(0);
+    cartRepo.save(cart);
     return AuthenticationResponse.builder()
+            .role(customer.getRole())
         .accessToken(jwtToken)
            .refreshToken(refreshToken)
         .build();
@@ -56,10 +67,13 @@ public class AuthenticationService {
     var customer = customerRepo.findByEmailId(request.getEmailId())
         .orElseThrow();
     var jwtToken = jwtService.generateToken(customer);
+    var role = customer.getRole();
     var refreshToken = jwtService.generateRefreshToken(customer);
     revokeAllUserTokens(customer);
     saveUserToken(customer, jwtToken);
     return AuthenticationResponse.builder()
+            .message("User Login Successfully")
+            .role(role)
         .accessToken(jwtToken)
           .refreshToken(refreshToken)
         .build();

@@ -30,8 +30,8 @@ public class Customer implements UserDetails {
     private String emailId;
     private Integer phoneNumber;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    private List<Order> orders = new ArrayList<>();
+    @OneToOne
+    private Cart cart = new Cart();
     private String resetPasswordToken;
     private String role;
 

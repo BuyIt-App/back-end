@@ -1,6 +1,7 @@
 package com.buyit.customerservice.config;
 
 import com.buyit.customerservice.client.OrderClient;
+import com.buyit.customerservice.client.ProductClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.loadbalancer.reactive.LoadBalancedExchangeFilterFunction;
 import org.springframework.context.annotation.Bean;
@@ -24,11 +25,29 @@ public class WebClientConfig {
     }
 
     @Bean
+    public WebClient productWebClient(){
+        return WebClient.builder()
+                .baseUrl("http://product-service")
+                .filter(filterFunction)
+                .build();
+    }
+
+
+    @Bean
     public OrderClient orderClient(){
         HttpServiceProxyFactory httpServiceProxyFactory = HttpServiceProxyFactory
                 .builder(WebClientAdapter.forClient(orderWebClient()))
                 .build();
 
         return httpServiceProxyFactory.createClient(OrderClient.class);
+    }
+
+    @Bean
+    public ProductClient productClient(){
+        HttpServiceProxyFactory httpServiceProxyFactory = HttpServiceProxyFactory
+                .builder(WebClientAdapter.forClient(productWebClient()))
+                .build();
+
+        return httpServiceProxyFactory.createClient(ProductClient.class);
     }
 }
