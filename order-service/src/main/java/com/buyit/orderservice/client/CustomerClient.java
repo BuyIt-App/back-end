@@ -14,6 +14,6 @@ public interface CustomerClient {
     @GetExchange("/customer/{id}")
     public CustomerRes getCustomerById(@PathVariable long id);
 
-    @GetExchange("/customer/getOrderAmount")
+    @GetExchange("/customer/cart/getOrderAmount")
     public Double getOrderAmount(@RequestBody OrderExchangeReq orderExchangeReq);
 }

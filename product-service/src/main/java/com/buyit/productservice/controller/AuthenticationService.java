@@ -33,6 +33,7 @@ public class AuthenticationService {
         .lastName(request.getLastName())
         .emailId(request.getEmailId())
             .phoneNumber(request.getPhoneNumber())
+            .address(request.getAddress())
         .password(passwordEncoder.encode(request.getPassword()))
         .role("INVENTORY KEEPER")
             .resetPasswordToken(null)

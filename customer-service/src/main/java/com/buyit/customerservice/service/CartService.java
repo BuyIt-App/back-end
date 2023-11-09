@@ -7,26 +7,22 @@ import com.buyit.customerservice.dto.requestDTO.OrderExchangeReq;
 import com.buyit.customerservice.dto.responseDTO.CartRes;
 import com.buyit.customerservice.model.Cart;
 import com.buyit.customerservice.model.CartItem;
-import com.buyit.customerservice.dto.Product;
 import com.buyit.customerservice.repository.CartItemRepo;
 import com.buyit.customerservice.repository.CartRepo;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class CartService {
+    private final CartRepo cartRepository;
 
-    @Autowired
-    private CartRepo cartRepository;
+    private final CartItemRepo cartItemRepo;
 
-    @Autowired
-    private CartItemRepo cartItemRepo;
-
-    @Autowired
-    private ProductClient productClient;
+    private final ProductClient productClient;
 
     public Cart addToCart(Cart cart, ProductRes product, int quantity) {
         CartItem cartItem = new CartItem();
@@ -94,6 +90,28 @@ public class CartService {
             }
         }
         return amount;
+    }
+
+    public void deleteCartItems(List<Long> cartItemIds, long cartId) {
+        List<CartItem> cartItems = cartItemRepo.findByCartId(cartId);
+        Cart cart = cartRepository.findById(cartId).orElse(null);
+
+        if (cart != null) {
+            for (Long itemId : cartItemIds) {
+                // Find and delete the cart item with the specified itemId
+                cartItems.stream()
+                        .filter(cartItem -> cartItem.getId().equals(itemId))
+                        .findFirst()
+                        .ifPresent(cartItem -> {
+                            // Deduct the subtotal from the cart total
+                            cart.setTotalPrice(cart.getTotalPrice() - cartItem.getSubtotal());
+                            cartRepository.save(cart);
+
+                            // Delete the cart item
+                            cartItemRepo.delete(cartItem);
+                        });
+            }
+        }
     }
 
 

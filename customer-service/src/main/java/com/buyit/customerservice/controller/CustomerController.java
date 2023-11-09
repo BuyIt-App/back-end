@@ -128,50 +128,15 @@ public class CustomerController {
 //        return customers;
 //    }
 
-    @PostMapping("/cart/{cartId}/add")
-    public ResponseEntity<?> addToCart(@PathVariable Long cartId, @RequestParam Long productId, @RequestParam int quantity) {
-        LOGGER.info("Add product to cart");
-        ProductRes product = productClient.getProductById(productId);
-
-        if (product == null) {
-            LOGGER.warn("Product not found");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found");
-        }
-
-        if (product.getQuantity().equals("Out of stock")) {
-            LOGGER.warn("Product is out of stock");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Product is out of stock");
-        }
-
-        Cart cart = cartService.getCart(cartId);
-
-        cartService.addToCart(cart, product, quantity);
-
-        LOGGER.info("Product added to cart successfully");
-        return ResponseEntity.status(HttpStatus.OK).body("Product added to the cart successfully");
+    @PutMapping("/{customerId}")
+    public ResponseEntity<CustomerRes> updateCustomer(@RequestBody CustomerRes customerRes,@PathVariable long customerId) {
+        CustomerRes updatedCustomer = customerService.updateCustomer(customerRes,customerId);
+        return new ResponseEntity<>(updatedCustomer, HttpStatus.OK);
     }
 
-    @GetMapping("/cart/{cartId}")
-    public ResponseEntity<?> getCart(@PathVariable Long cartId) {
-        LOGGER.info("Get cart by ID");
-        try {
-            CartRes cart = cartService.getCartRes(cartId);
-            return ResponseEntity.ok(cart);
-        } catch (Exception e) {
-            LOGGER.error("Error occurred while retrieving the cart", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
-        }
-    }
 
-    @GetMapping("/getOrderAmount")
-    public Double getOrderAmount(@RequestBody OrderExchangeReq orderExchangeReq){
-        return cartService.getCheckOutAmount(orderExchangeReq);
-    }
 
-    @GetMapping("/refreshCart/{cartId}")
-    public String refreshCart(@PathVariable long cartId){
-        return refreshCart(cartId);
-    }
+
 
 
 }

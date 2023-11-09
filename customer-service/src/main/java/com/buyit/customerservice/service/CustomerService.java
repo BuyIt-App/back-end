@@ -18,13 +18,15 @@ public class CustomerService {
         List<Customer> customers= customerRepo.findAll();
         List<CustomerRes> customerResList = new ArrayList<>();
         for(Customer c:customers){
-            CustomerRes cr = new CustomerRes();
-            cr.setCustomerId(c.getCustomerId());
-            cr.setEmailId(c.getEmailId());
-            cr.setFirstName(c.getFirstName());
-            cr.setLastName(c.getLastName());
-            cr.setPhoneNumber(c.getPhoneNumber());
-            customerResList.add(cr);
+            if(c.getRole().equals("CUSTOMER")) {
+                CustomerRes cr = new CustomerRes();
+                cr.setCustomerId(c.getCustomerId());
+                cr.setEmailId(c.getEmailId());
+                cr.setFirstName(c.getFirstName());
+                cr.setLastName(c.getLastName());
+                cr.setPhoneNumber(c.getPhoneNumber());
+                customerResList.add(cr);
+            }
         }
 
         return customerResList;
@@ -43,5 +45,17 @@ public class CustomerService {
 
         return cr;
     }
+
+    public CustomerRes updateCustomer(CustomerRes customerRes, long customerId) {
+            Customer customer = customerRepo.findById((int) customerId).get();
+            customerRes.setCustomerId(customerId);
+            customer.setEmailId(customerRes.getEmailId());
+            customer.setFirstName(customerRes.getFirstName());
+            customer.setLastName(customerRes.getLastName());
+            customer.setPhoneNumber(customerRes.getPhoneNumber());
+            customerRepo.save(customer);
+
+            return  customerRes;
+        }
 
 }
