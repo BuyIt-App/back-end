@@ -18,9 +18,9 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ProductService {
-    private ProductRepo productRepository;
+    private final ProductRepo productRepository;
 
-    private ProductCategoryRepo productCategoryRepo;
+    private final ProductCategoryRepo productCategoryRepo;
 
     public List<ProductRes> getAllProducts() {
         List<Product> productList = productRepository.findAll();
@@ -67,8 +67,10 @@ public class ProductService {
 
     }
 
-    public void deleteProduct(Long productId) {
-        productRepository.deleteById(productId);
+    public Product deleteProduct(Long productId) {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException("Product not found"));
+        productRepository.delete(product);
+        return product;
     }
 
     public ProductRes getById(Long productId) {
