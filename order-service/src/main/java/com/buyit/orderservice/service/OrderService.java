@@ -1,5 +1,6 @@
 package com.buyit.orderservice.service;
 
+import com.buyit.orderservice.Exception.OrderNotFoundException;
 import com.buyit.orderservice.client.CustomerClient;
 import com.buyit.orderservice.dto.*;
 import com.buyit.orderservice.mail.EmailSender;
@@ -132,7 +133,9 @@ public class OrderService {
         return orderRepo.save(order);
     }
 
+
     public void updateDeliveryStatus(OrderStsUpdateReq orderStsUpdateReq) throws MessagingException, UnsupportedEncodingException {
+        // update deliveryperson id in the order
         Order order = orderRepo.findById(orderStsUpdateReq.getOrderId()).get();
         order.setOrderId(order.getOrderId());
         order.setCustomerId(order.getCustomerId());
@@ -141,12 +144,14 @@ public class OrderService {
         order.setDeliveryPersonId(orderStsUpdateReq.getDeliveryPersonId());
         orderRepo.save(order);
 
+        //order status history for delivery update being created
         OrderStatusHistory orderStatusHistory = new OrderStatusHistory();
         orderStatusHistory.setOrderId(order.getOrderId());
         orderStatusHistory.setStatus(orderStsUpdateReq.getStatus());
         LocalDateTime currentDateTime = LocalDateTime.now();
         orderStatusHistory.setTimestamp(currentDateTime);
 
+        //get customer detailsfrom customer client to send mail.
         CustomerRes customerRes = customerClient.getCustomerById(order.getCustomerId());
         String email = customerRes.getEmailId();
         EmailSender emailSender = new EmailSender(mailSender);
@@ -166,14 +171,16 @@ public class OrderService {
         emailSender.sendEmail(email, subject, content);
 
         orderStatusHistoryRepo.save(orderStatusHistory);
-
     }
+
+
 
     public void orderStatusUpdate(OtherOrderStatusUpdate oosu) throws MessagingException, UnsupportedEncodingException {
         Order order = orderRepo.findById(oosu.getOrderId()).get();
         OrderStatusHistory orderStatusHistory = new OrderStatusHistory();
         orderStatusHistory.setOrderId(order.getOrderId());
         orderStatusHistory.setStatus(oosu.getStatus());
+
         LocalDateTime currentDateTime = LocalDateTime.now();
         orderStatusHistory.setTimestamp(currentDateTime);
 
@@ -199,8 +206,6 @@ public class OrderService {
         }
 
 
-
-
         orderStatusHistoryRepo.save(orderStatusHistory);
 
     }
@@ -209,6 +214,7 @@ public class OrderService {
         Order order = orderRepo.findById(orderId).orElse(null);
         CustomerRes customerRes = customerClient.getCustomerById(order.getCustomerId());
         OtherOrderStatusUpdate o = new OtherOrderStatusUpdate(orderId," Canceled",customerRes);
+//        CustomerRes customerRes
         orderStatusUpdate(o);
         return "Order canceled Successfully";
     }
@@ -232,5 +238,11 @@ public class OrderService {
     }
 
 
+    public Order updateShippingAddress(String address, long orderId) {
+        Order order = orderRepo.findById(orderId).orElseThrow(() -> new OrderNotFoundException("Order not found"));
+        order.setShippingAddress(address);
+        orderRepo.save(order);
+        return order;
+    }
 }
 

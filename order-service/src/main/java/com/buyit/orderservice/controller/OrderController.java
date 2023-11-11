@@ -7,6 +7,7 @@ import com.buyit.orderservice.repository.OrderRepo;
 import com.buyit.orderservice.service.OrderService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -64,6 +65,24 @@ public class OrderController {
         return ResponseEntity.ok(orders);
     }
 
+
+    @PutMapping("/{orderId}")
+    public String deleteOrder(@PathVariable long orderId) throws MessagingException, UnsupportedEncodingException {
+        return orderService.deleteOrder(orderId);
+    }
+
+    @PutMapping("/updateShippingAddress/{orderId}")
+    public ResponseEntity<?> updateShippingAddress(@RequestBody String address,@PathVariable long orderId){
+        try{
+            Order order = orderService.updateShippingAddress(address,orderId);
+            return ResponseEntity.ok(order);
+        }catch (Exception e){
+            return new ResponseEntity<>( e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+
+    }
+
+
     @PutMapping("/updateDeliveryStatus")
     public String updateDeliveryStatus(@RequestBody OrderStsUpdateReq orderStsUpdateReq) throws MessagingException, UnsupportedEncodingException {
         orderService.updateDeliveryStatus(orderStsUpdateReq);
@@ -78,13 +97,6 @@ public class OrderController {
         orderService.orderStatusUpdate(otherOrderStatusUpdate);
         return "Order status updated successfully";
     }
-
-    @PutMapping("/{orderId}")
-    public String deleteOrder(@PathVariable long orderId) throws MessagingException, UnsupportedEncodingException {
-        return orderService.deleteOrder(orderId);
-    }
-
-
 
 
 

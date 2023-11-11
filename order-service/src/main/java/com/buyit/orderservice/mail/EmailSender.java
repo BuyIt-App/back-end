@@ -17,14 +17,14 @@ public class EmailSender {
 
     public void sendEmail(String email, String subject, String content) throws MessagingException, UnsupportedEncodingException {
         MimeMessage message = mailSender.createMimeMessage();
+
         MimeMessageHelper helper = new MimeMessageHelper(message);
 
         helper.setFrom("contact@buyit.com", "Buyit Support");
-
         helper.setTo(email);
-
         helper.setSubject(subject);
         helper.setText(content, true);
+
         mailSender.send(message);
     }
 }

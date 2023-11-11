@@ -57,8 +57,14 @@ public class ProductService {
         return productRepository.save(Product);
     }
 
-    public Product updateProduct(Product Product) {
-        return productRepository.save(Product);
+    public Product updateProduct(Product product) {
+        // Ensure the category exists before updating
+        if (productRepository.existsById(product.getProductId())) {
+            return productRepository.save(product);
+        }else {
+            return  null;
+        }
+
     }
 
     public void deleteProduct(Long productId) {

@@ -15,8 +15,6 @@ public class CustomerRes {
     private String lastName;
     private String emailId;
     private Integer phoneNumber;
-    private List<Order> orders = new ArrayList<>();
-//    private Cart cart;
 
 
 }

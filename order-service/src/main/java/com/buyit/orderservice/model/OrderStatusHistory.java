@@ -22,6 +22,4 @@ public class OrderStatusHistory {
     private String status;
     private LocalDateTime timestamp;
 
-
-
 }
