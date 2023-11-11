@@ -28,7 +28,9 @@ public class CartController {
     private final OrderClient orderClient;
     private final ProductClient productClient;
 
+
     Logger LOGGER = LoggerFactory.getLogger(CustomerController.class);
+
 
     @PostMapping("/{cartId}/add")
     public ResponseEntity<?> addToCart(@PathVariable Long cartId, @RequestParam Long productId, @RequestParam int quantity) {
@@ -70,7 +72,7 @@ public class CartController {
         return cartService.getCheckOutAmount(orderExchangeReq);
     }
 
-    @GetMapping("/cart/refreshCart/{cartId}")
+    @GetMapping("/refreshCart/{cartId}")
     public String refreshCart(@PathVariable long cartId){
         return refreshCart(cartId);
     }

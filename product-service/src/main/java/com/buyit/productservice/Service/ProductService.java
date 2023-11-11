@@ -7,6 +7,7 @@ import com.buyit.productservice.model.Category;
 import com.buyit.productservice.model.Product;
 import com.buyit.productservice.repository.ProductCategoryRepo;
 import com.buyit.productservice.repository.ProductRepo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +16,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ProductService {
-    @Autowired
     private ProductRepo productRepository;
-    @Autowired
+
     private ProductCategoryRepo productCategoryRepo;
 
     public List<ProductRes> getAllProducts() {
@@ -38,7 +39,8 @@ public class ProductService {
         productRes.setProductName(product.getProductName());
         productRes.setDescription(product.getDescription());
         productRes.setPrice(product.getPrice());
-        Category p =  productCategoryRepo.findById(product.getCategoryId()).get();
+
+        Category p =  productCategoryRepo.findById(product.getCategoryId()).orElse(null);
         productRes.setCategory(p.getCategoryName());
 
         if (product.getQuantity() == 0) {
@@ -64,8 +66,9 @@ public class ProductService {
     }
 
     public ProductRes getById(Long productId) {
-        Product product = productRepository.findById(productId).get();
-        return mapToProductRes(product);
+        Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException("Product not found"));;
+            return mapToProductRes(product);
+
     }
 
     public void updateProductQuantity(long productId, long quantity) {

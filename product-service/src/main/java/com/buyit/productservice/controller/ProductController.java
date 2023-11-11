@@ -32,12 +32,12 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}")
-    public ResponseEntity<ProductRes> getProductById(@PathVariable long productId) {
+    public ResponseEntity<?> getProductById(@PathVariable long productId) {
+        try{
         ProductRes product = productService.getById(productId);
-        if (product != null) {
             return ResponseEntity.ok(product);
-        } else {
-            return ResponseEntity.notFound().build();
+        }catch (Exception e){
+            return new ResponseEntity<>( e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 

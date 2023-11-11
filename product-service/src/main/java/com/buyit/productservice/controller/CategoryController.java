@@ -31,19 +31,25 @@ public class CategoryController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Category> updateCategory(@RequestBody Category category) {
+    public ResponseEntity<?> updateCategory(@RequestBody Category category) {
         Category updatedCategory = categoryService.updateCategory(category);
-        return ResponseEntity.ok(updatedCategory);
+        if(updatedCategory != null){
+            return ResponseEntity.ok(updatedCategory);
+        }
+        else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Category Not found");
+        }
     }
 
     @GetMapping("/{categoryId}")
-    public ResponseEntity<Category> getCategory(@PathVariable Long categoryId) {
-        Category category = categoryService.getCategory(categoryId);
-        if (category != null) {
+    public ResponseEntity<?> getCategory(@PathVariable Long categoryId) {
+        try {
+            Category category = categoryService.getCategory(categoryId);
             return ResponseEntity.ok(category);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }catch (Exception e){
+            return new ResponseEntity<>( e.getMessage(), HttpStatus.NOT_FOUND);
         }
+
     }
     @GetMapping("/all")
     public ResponseEntity<List<Category>> getAllCategories() {

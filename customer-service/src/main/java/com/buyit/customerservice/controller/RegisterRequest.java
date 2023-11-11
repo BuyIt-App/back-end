@@ -16,5 +16,4 @@ public class RegisterRequest {
   private String password;
   private Integer phoneNumber;
 
-
 }

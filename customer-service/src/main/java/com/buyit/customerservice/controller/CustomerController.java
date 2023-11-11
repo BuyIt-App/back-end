@@ -2,12 +2,6 @@ package com.buyit.customerservice.controller;
 
 import com.buyit.customerservice.client.OrderClient;
 import com.buyit.customerservice.client.ProductClient;
-import com.buyit.customerservice.dto.Product;
-import com.buyit.customerservice.dto.ProductRes;
-import com.buyit.customerservice.dto.requestDTO.OrderDetReq;
-import com.buyit.customerservice.dto.requestDTO.OrderExchangeReq;
-import com.buyit.customerservice.dto.requestDTO.OrderReq;
-import com.buyit.customerservice.dto.responseDTO.CartRes;
 import com.buyit.customerservice.dto.responseDTO.CustomerRes;
 import com.buyit.customerservice.model.*;
 import com.buyit.customerservice.repository.CustomerRepo;
@@ -119,14 +113,6 @@ public class CustomerController {
         List<CustomerRes> customers = customerService.getAllCustomers();
         return ResponseEntity.ok(customers);
     }
-
-//    @GetMapping("/with-orders")
-//    public List<CustomerRes> getAllCustomersWithOrder() {
-//        LOGGER.info("Get all customers with orders");
-//        List<CustomerRes> customers = customerService.getAllCustomers();
-//        customers.forEach(customer -> customer.setOrderList(orderClient.getOrdersByCustomerId(customer.getCustomerId())));
-//        return customers;
-//    }
 
     @PutMapping("/{customerId}")
     public ResponseEntity<CustomerRes> updateCustomer(@RequestBody CustomerRes customerRes,@PathVariable long customerId) {

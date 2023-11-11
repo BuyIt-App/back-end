@@ -28,6 +28,8 @@ public class AuthenticationService {
   private final AuthenticationManager authenticationManager;
 
 
+
+
   public AuthenticationResponse register(RegisterRequest request) {
     var deliverPerson = DeliveryPerson.builder()
             .firstName(request.getFirstName())
@@ -44,10 +46,9 @@ public class AuthenticationService {
     var jwtToken = jwtService.generateToken(deliverPerson);
     var refreshToken = jwtService.generateRefreshToken(deliverPerson);
     saveUserToken(savedUser, jwtToken);
-    return AuthenticationResponse.builder()
-        .accessToken(jwtToken)
-           .refreshToken(refreshToken)
-        .build();
+
+    AuthenticationResponse authenticationResponse = new AuthenticationResponse(jwtToken,refreshToken);
+    return authenticationResponse;
   }
 
   public AuthenticationResponse authenticate(AuthenticationRequest request) {

@@ -42,7 +42,6 @@ public class CustomerService {
         cr.setLastName(c.getLastName());
         cr.setPhoneNumber(c.getPhoneNumber());
 
-
         return cr;
     }
 

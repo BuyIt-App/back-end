@@ -29,6 +29,7 @@ public class DeliveryPerson implements UserDetails {
     private String resetPasswordToken;
     private String role;
 
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role));

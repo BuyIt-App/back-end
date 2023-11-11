@@ -1,5 +1,7 @@
 package com.buyit.productservice.Service;
 
+import com.buyit.productservice.Exception.CategoryNotFoundException;
+import com.buyit.productservice.Exception.ProductNotFoundException;
 import com.buyit.productservice.model.Category;
 import com.buyit.productservice.repository.ProductCategoryRepo;
 import org.springframework.stereotype.Service;
@@ -27,12 +29,14 @@ public class CategoryService {
         // Ensure the category exists before updating
         if (productCategoryRepo.existsById(category.getCategoryId())) {
             return productCategoryRepo.save(category);
+        }else {
+            return  null;
         }
-        return null;
+
     }
 
     public Category getCategory(Long categoryId) {
-        return productCategoryRepo.findById(categoryId).orElse(null);
+        return productCategoryRepo.findById(categoryId).orElseThrow(() -> new CategoryNotFoundException("Category not found"));
     }
 
     public List<Category> getAllCategories() {

@@ -9,6 +9,6 @@ import java.util.List;
 
 @HttpExchange
 public interface OrderClient {
-    @GetExchange("/order/customer/{customerId}")
+    @GetExchange("/order/customer/cart/{customerId}")
     public List<OrderDto> getOrdersByCustomerId(@PathVariable Long customerId);
 }

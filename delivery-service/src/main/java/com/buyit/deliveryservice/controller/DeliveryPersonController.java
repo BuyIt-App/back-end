@@ -50,8 +50,8 @@ public class DeliveryPersonController {
     }
     public boolean userAlreadyExists(String email) {
         LOGGER.info("Check if user already exists");
-        Optional<DeliveryPerson> existingUser = deliveryPersonRepo.findByEmailId(email);
-        return existingUser.isPresent();
+        Optional<DeliveryPerson> inv = deliveryPersonRepo.findByEmailId(email);
+        return inv.isPresent();
     }
 
     @PostMapping("/sign_in")
